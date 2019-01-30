@@ -1,5 +1,4 @@
-#FROM smartbear/ready-api-soapui-testrunner:latest
-FROM smartbear/ready-api-soapui-testrunner:2.5.0-fixed
+FROM smartbear/ready-api-soapui-testrunner:latest
 
 RUN apt-get update -y && apt-get upgrade -y
 
