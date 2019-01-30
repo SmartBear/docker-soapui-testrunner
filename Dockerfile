@@ -11,6 +11,7 @@ RUN apt-get update -y && apt-get upgrade -y
 # need to specify the project file name in the command line option
 # -e COMMAND_LINE="Test Runner Arguments"):
 
+# RUN mkdir -p $PROJECT_FOLDER
 # ADD /readyapi/projects/sample-readyapi-project $PROJECT_FOLDER
 
 
