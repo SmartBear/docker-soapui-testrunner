@@ -2,35 +2,43 @@ FROM smartbear/ready-api-soapui-testrunner:latest
 
 RUN apt-get update -y && apt-get upgrade -y
 
-##### USE CASE 1: integrating a ReadyAPI project into an image
+##### USE CASE 1: add a ReadyAPI project to a Docker image
 
-# By default a project and all the dependent files are placed inside some folder
-# on a local machine that will be copied to a container when it is started. This
-# folder is defined by the command line option -v="Project Folder":/project. But
-# it is possible to integrate all the necessary files into an image (you will
-# need to specify the project file name in the command line option
-# -e COMMAND_LINE="Test Runner Arguments"):
+# You need to provide a container with a project file and all the dependent files.
+# You can specify these files in the command line you use to run the container.
+# It is possible to add the files to a Docker image. In this case, you can omit the 
+# -v="Project folder":/project option in the command line. Note that you will
+# still have to specify the project name in the COMMAND_LINE variable.
+# To include the files in a Docker image, use the following lines:
 
 # RUN mkdir -p $PROJECT_FOLDER
 # ADD /readyapi/projects/sample-readyapi-project $PROJECT_FOLDER
 
+##### USE CASE 2: specify the license server address in a Docker image
 
-##### USE CASE 2: specifying a license server address inside an image
-
-# To run SoapUI tests a floating license is required. The address of the license
-# server can be specified either by the command line option
-# -e LICENSE_SERVER="License Server Address" or by setting the environment variable:
+# To run SoapUI tests in a container, you need a SoapUI floating license.
+# You can specify the address of the license server when you run the container by using
+# the -e LICENSE_SERVER="License server address" option, or you can specify this
+# information in a Docker image:
 
 # ENV LICENSE_SERVER=10.0.10.1:1099
 
+##### USE CASE 3: add external libraries to ReadyAPI's bin/ext folder
 
-##### USE CASE 3: adding external libraries to ReadyAPI's ext folder
-
-# Some SoapUI tests require external libraries to be executed. For example,
-# it is necessary to put the appropriate driver JAR files to ReadyAPI's ext folder
-# in case JDBC Request test steps need them. If the command line option
-# -v="Extensions Folder":/ext is used then the libaries will be copied to a container
-# to the appropriate ReadyAPI folder. The next command can be used to integrate the
-# libraries to an image to speed up containers start:
+# If you use external libraries in your test, you must put them to ReadyAPI's 
+# bin/ext folder. For example, if you interact with a database, you will have 
+# to put a JDBC driver there. It is possible to add this file to a Docker image.
+# In this case, you can omit the -v="Extensions Folder":/ext option in the command line.
+# To add the libraries to a Docker image, use the following line:
 
 # ADD /readyapi/ext $READYAPI_FOLDER/bin/ext
+
+##### USE CASE 4: specify a command line in a Docker image
+
+# When you run a container, it runs the SoapUI test runner via the command line 
+# specified in the COMMAND_LINE environment variable. You can add this
+# command line to a Docker image. In this case, you will be able to skip the 
+# -e COMMAND_LINE="Test runner arguments". To add the command line,
+# use the following line:
+
+# ENV COMMAND_LINE="-f/%reports% '-RJUnit-Style HTML Report' -FHTML '-EDefault environment' '/%project%/sample-readyapi-project.xml'"
