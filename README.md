@@ -5,14 +5,14 @@
 * [About](#about)
 * [Required license](#required-license)
 * [Required arguments](#required-arguments)
-* [Build an image](#build-image)
-* [Configure an image](#configure-image)
-  * [Add files to an image](#add-files-to-image)
+* [Build an image](#build-an-image)
+* [Configure an image](#configure-an-image)
+  * [Add files to an image](#add-files-to-an-image)
   * [Specify a license server](#specify-a-license-server)
   * [Integrate external libraries](#integrate-external-libraries)
-  * [Specify a command line](#specify-command-line)
-* [Build an image](#build-image)
-* [Run containers](#run-containers)
+  * [Specify a command line](#specify-a-command-line)
+* [Build an image](#build-an-image)
+* [Run a Docker container](#run-a-docker-container)
   * [Arguments](#arguments)
   * [Full command sample](#full-command-sample)
 * [Environment variables](#environment-variables)
@@ -36,12 +36,12 @@ To build an image:
   ```
   git clone https://github.com/smartbear/docker-soapui-testrunner
   ```
-3. [Edit the Dockerfile](#configure-image) to customize the image.
+3. [Edit the Dockerfile](#configure-an-image) to customize the image.
 4. Execute the following command in the repository root folder:
   ```
   docker build -t mycompany/docker-soapui-testrunner .\
   ```
-5. After the image has been built, you can [run a container](#run-container).
+5. After the image has been built, you can [run a container](#run-a-docker-container).
 
 ## Required arguments
 
@@ -56,7 +56,7 @@ Optionally, you may need to pass:
 - additional files used in the project
 - extension libraries
 
-There are two ways to pass this data to a container: [add it to the base image](#configure-image) or [specify it in the command line](#run-container) when you run the container.
+There are two ways to pass this data to a container: [add it to the base image](#configure-an-image) or [specify it in the command line](#run-a-docker-container) when you run the container.
 
 Typically, you add data that is not changed from test to test to the image and specify variable data in the command line when you run a container.
 
@@ -69,7 +69,7 @@ Below, you can find several examples with typical tasks:
 * [Add files to an image](#add-files-to-an-image)
 * [Specify a license server](#specify-a-license-server)
 * [Integrate external libraries](#integrate-external-libraries)
-* [Specify a command line](#specify-command-line)
+* [Specify a command line](#specify-a-command-line)
 
 ### Add files to an image
 
@@ -81,7 +81,7 @@ ADD my-folder $PROJECT_FOLDER
 ```
 This command copies all the files from the  *my-folder* directory to the project directory in an image.
 
-To learn more about the `$PROJECT_FOLDER` environment variable, see [below](#environment-variable).
+To learn more about the `$PROJECT_FOLDER` environment variable, see [below](#environment-variables).
 
 **Tip**: Make sure you use the relative path to these files in the project. To learn more about it, see [ReadyAPI documentation](https://support.smartbear.com/readyapi/docs/testing/best-practices/root.html).
 
@@ -111,12 +111,12 @@ To learn more about the `READYAPI_FOLDER` environment variable, see [below](#env
 
 ### Specify a command line
 
-If your containers use the same command line, you can add it to an image. To do this, modify the `COMMAND_LINE` [environmental variable](#environmental-variable):
+If your containers use the same command line, you can add it to an image. To do this, modify the `COMMAND_LINE` [environmental variable](#environment-variables):
 
 ```
 ENV COMMAND_LINE="-f/%reports% '-RJUnit-Style HTML Report' -FHTML '-EDefault environment' '/%project%/sample-readyapi-project.xml'"
 ```
-**Note**: The command line in the example above commands ReadyAPI to generate reports. To copy this report to your host machine, you need to specify the folder to which you want to copy it. See [below](#command-line-arguments) for more information.
+**Note**: The command line in the example above commands ReadyAPI to generate reports. To copy this report to your host machine, you need to specify the folder to which you want to copy it. See [below](#arguments) for more information.
 
 ## Run a Docker container
 
@@ -124,7 +124,7 @@ To run a SoapUI functional test in a Docker container, use the following command
 
 	docker run -v="Project Folder":/project -v="Report Folder":/reports -v="Extensions Folder":/ext -e LICENSE_SERVER="License Server Address" -e COMMAND_LINE="Test Runner Arguments" -it mycompany/docker-soapui-testrunner
 
-Depending on the data you [added to the image](#configure-image), you can omit some arguments.
+Depending on the data you [added to the image](#add-files-to-an-image), you can omit some arguments.
 
 ### Arguments
 
@@ -135,7 +135,7 @@ Depending on the data you [added to the image](#configure-image), you can omit s
   **Note**: On some systems, you may need to change the path in the following way:
   ```"/readyapi/projects/sample-readyapi-project" -> "/host_mnt/readyapi/projects/sample-readyapi-project"```
 
-  **Tip**: Alternatively, you can include the needed files in an image (see [above](#add-files-to-image)).
+  **Tip**: Alternatively, you can include the needed files in an image (see [above](#add-files-to-an-image)).
 
 - *-v="Extensions Folder":/ext*
     Specifies the folder whose content will be copied to the _/bin/ext_ folder of the ReadyAPI installation folder in a container. Use this argument if your project requires additional libraries, such as database drivers or plugins.
@@ -163,7 +163,7 @@ Depending on the data you [added to the image](#configure-image), you can omit s
     Specifies arguments for the test runner. The `%project%` variable refers to the container folder to which the contents of the project folder were copied. To refer to the reports volume, use the `%reports%` variable.
     Usage: ```-e COMMAND_LINE="-f/%reports% '-RJUnit-Style HTML Report' -FHTML '-EDefault environment' '/%project%/sample-readyapi-project.xml'"```
 
-    **Tip**: Alternatively, you can specify the command line in an image (see an example [above](#specify-command-line))
+    **Tip**: Alternatively, you can specify the command line in an image (see an example [above](#specify-a-command-line))
 
 - *-it*
     **Required.** This command enables an interactive command-line interface within a Docker container.
@@ -192,7 +192,7 @@ The base _ready-api-soapui-testrunner_ image uses the following environment vari
     Default value: ```/usr/local/SmartBear/project```
 
 - *REPORTS_FOLDER*
-    Contains the folder where reports will be placed in a container. To copy these reports to a folder on a local machine, use the _-v="Report Folder":/reports_ option when you [run the container](#run-docker-container).
+    Contains the folder where reports will be placed in a container. To copy these reports to a folder on a local machine, use the _-v="Report Folder":/reports_ option when you [run the container](#run-a-docker-container).
     Default value: ```/reports``` 
 
 - *LICENSE_SERVER*
