@@ -81,6 +81,8 @@ ADD my-folder $PROJECT_FOLDER
 ```
 This command copies all the files from the  *my-folder* directory to the project directory in an image.
 
+**Important**: The directory you want to add must be in the folder containing the Dockerfile.
+
 To learn more about the `$PROJECT_FOLDER` environment variable, see [below](#environment-variables).
 
 **Tip**: Make sure you use the relative path to these files in the project. To learn more about it, see [ReadyAPI documentation](https://support.smartbear.com/readyapi/docs/testing/best-practices/root.html).
@@ -101,7 +103,7 @@ ENV LICENSE_SERVER=10.0.21.14:1099
 
 If you use external libraries in your project, you need to add them to the ReadyAPI installation folder. For example, if you use databases in a test, you need to install JDBC drivers. Most likely, you will use the same driver in all your test runs, so it is reasonable to include it in a Docker image. To do this:
 
-1. Copy the needed libraries to the _ext_ folder next to the Dockerfile.
+1. Copy the needed libraries to the _ext_ folder that contains the Dockerfile.
 2. Add the following instruction to the Dockerfile:
 ```
   ADD ext $READYAPI_FOLDER/bin/ext
