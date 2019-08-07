@@ -9,10 +9,11 @@ RUN apt-get update -y && apt-get upgrade -y
 # It is possible to add the files to a Docker image. In this case, you can omit the 
 # -v="Project folder":/project option in the command line. Note that you will
 # still have to specify the project name in the COMMAND_LINE variable.
+# Note that files you want to add must be in the build context.
 # To include the files in a Docker image, use the following lines:
 
 # RUN mkdir -p $PROJECT_FOLDER
-# ADD /readyapi/projects/sample-readyapi-project $PROJECT_FOLDER
+# ADD projects/sample-readyapi-project $PROJECT_FOLDER
 
 ##### USE CASE 2: specify the license server address in a Docker image
 
@@ -29,9 +30,10 @@ RUN apt-get update -y && apt-get upgrade -y
 # bin/ext folder. For example, if you interact with a database, you will have 
 # to put a JDBC driver there. It is possible to add this file to a Docker image.
 # In this case, you can omit the -v="Extensions Folder":/ext option in the command line.
+# Note that the libraries you want to add must be in the build context.
 # To add the libraries to a Docker image, use the following line:
 
-# ADD /readyapi/ext $READYAPI_FOLDER/bin/ext
+# ADD readyapi/ext $READYAPI_FOLDER/bin/ext
 
 ##### USE CASE 4: specify a command line in a Docker image
 
