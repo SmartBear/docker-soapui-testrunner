@@ -2,22 +2,24 @@
 
 ## Table of contents
 
-* [About](#about)
-* [Required license](#required-license)
-* [Required arguments](#required-arguments)
-* [Build an image](#build-an-image)
-* [Configure an image](#configure-an-image)
-  * [Add files to an image](#add-files-to-an-image)
-  * [Specify a license server](#specify-a-license-server)
-  * [Integrate external libraries](#integrate-external-libraries)
-  * [Specify a command line](#specify-a-command-line)
-* [Build an image](#build-an-image)
-* [Run a Docker container](#run-a-docker-container)
-  * [Arguments](#arguments)
-  * [Full command sample](#full-command-sample)
-* [Environment variables](#environment-variables)
-* [Exit codes](#exit-codes)
-* [Troubleshooting](#troubleshooting)
+- [Docker SoapUI Test Runner](#docker-soapui-test-runner)
+  - [Table of contents](#table-of-contents)
+  - [About](#about)
+  - [Required license](#required-license)
+  - [Build an image](#build-an-image)
+  - [Required arguments](#required-arguments)
+  - [Configure an image](#configure-an-image)
+    - [Add files to an image](#add-files-to-an-image)
+    - [Specify a license server](#specify-a-license-server)
+    - [Integrate external libraries](#integrate-external-libraries)
+    - [Install plugins](#install-plugins)
+    - [Specify a command line](#specify-a-command-line)
+  - [Run a Docker container](#run-a-docker-container)
+    - [Arguments](#arguments)
+      - [Full command sample](#full-command-sample)
+  - [Environment variables](#environment-variables)
+  - [Exit codes](#exit-codes)
+  - [Troubleshooting](#troubleshooting)
 
 ## About
 
@@ -111,6 +113,18 @@ If you use external libraries in your project, you need to add them to the Ready
 
 To learn more about the `READYAPI_FOLDER` environment variable, see [below](#environment-variables).
 
+### Install plugins
+
+If you use plugins in your test, you must install them to ReadyAPI in a container. For example, if you run your test by using the MQTT or AMQP protocols, you must install the related plugins. It is possible to add them to a Docker image. In this case, you can omit `-v="Plugins folder":/root/.soapui/plugins` in the command line. Note that the plugin files you want to add must be in the build context.
+
+To add plugins to a Docker image, do the following:
+
+1. Copy the needed plugins to the _plugin_ folder that contains the Dockerfile. You can find the plugins installed in ReadyAPI in the _\<User folder\>/.soapui/plugins_ folder.
+2. Add the following instruction to the Dockerfile:
+```
+  ADD plugins /root/.soapui/plugins
+```
+
 ### Specify a command line
 
 If your containers use the same command line, you can add it to an image. To do this, modify the `COMMAND_LINE` [environmental variable](#environment-variables):
@@ -124,7 +138,7 @@ ENV COMMAND_LINE="-f/%reports% '-RJUnit-Style HTML Report' -FHTML '-EDefault env
 
 To run a SoapUI functional test in a Docker container, use the following command line:
 
-	docker run -v="Project Folder":/project -v="Report Folder":/reports -v="Extensions Folder":/ext -e LICENSE_SERVER="License Server Address" -e COMMAND_LINE="Test Runner Arguments" -it mycompany/docker-soapui-testrunner
+	docker run -v="Project Folder":/project -v="Report Folder":/reports -v="Extensions Folder":/ext -v="Plugins Folder:/root/.soapui/plugins -e LICENSE_SERVER="License Server Address" -e COMMAND_LINE="Test Runner Arguments" -it mycompany/docker-soapui-testrunner
 
 Depending on the data you [added to the image](#add-files-to-an-image), you can omit some arguments.
 
@@ -140,7 +154,7 @@ Depending on the data you [added to the image](#add-files-to-an-image), you can 
   **Tip**: Alternatively, you can include the needed files in an image (see [above](#add-files-to-an-image)).
 
 - *-v="Extensions Folder":/ext*
-    Specifies the folder whose content will be copied to the _/bin/ext_ folder of the ReadyAPI installation folder in a container. Use this argument if your project requires additional libraries, such as database drivers or plugins.
+    Specifies the folder whose content will be copied to the _/bin/ext_ folder of the ReadyAPI installation folder in a container. Use this argument if your project requires additional libraries, such as database drivers or plugins.<br/>
     Usage: ```-v="C:\readyapi\ext":/ext```
 
     **Note**: On some systems, you may need to change the path in the following way:
@@ -148,21 +162,30 @@ Depending on the data you [added to the image](#add-files-to-an-image), you can 
 
     **Tip**: Alternatively, you can include the needed libraries in an image (see [above](#integrate-external-libraries)).
 
+- *-v="Plugins Folder":/root/.soapui/plugins*
+   Specifies the folder with plugins that should be installed to ReadyAPI in the container.<br/>
+   Usage: ```-v="C:\Users\<User>\.soapui\plugins":/root/.soapui/plugis```
+
+   **Note**: On some systems, you may need to change the path in the following way:
+    ```"C:\Users\<User>\.soapui\plugins" -> "/host_mnt/C/Users/<User>/.soapui/plugins"```
+
+    **Tip**: Alternatively, you can include the needed plugins in an image (see [above](#integrate-plugins)).
+
 - *-v="Report Folder":/reports*
-  Specifies the folder on a local machine to which the generated reports will be exported.
+  Specifies the folder on a local machine to which the generated reports will be exported.<br/>
   Usage: ```-v="C:\readyapi\reports":/reports```
 
   **Note**: On some systems, you may need to change the path in the following way:
   ```"C:\readyapi\reports" -> "/host_mnt/C/readyapi/reports"```
 
 - *-e LICENSE_SERVER="License Server Address"*
-    Specifies the address of the license server. When a container runs, it connects to the specified server to obtain the SoapUI floating license.
+    Specifies the address of the license server. When a container runs, it connects to the specified server to obtain the SoapUI floating license.<br/>
     Usage: ```-e LICENSE_SERVER="10.0.10.1:1099"```
 
     **Tip**: Alternatively, you can specify the address of the license server in an image (see [above](#specify-a-license-server)).
 
 - *-e COMMAND_LINE="Test Runner Arguments"*
-    Specifies arguments for the test runner. The `%project%` variable refers to the container folder to which the contents of the project folder were copied. To refer to the reports volume, use the `%reports%` variable.
+    Specifies arguments for the test runner. The `%project%` variable refers to the container folder to which the contents of the project folder were copied. To refer to the reports volume, use the `%reports%` variable.<br/>
     Usage: ```-e COMMAND_LINE="-f/%reports% '-RJUnit-Style HTML Report' -FHTML '-EDefault environment' '/%project%/sample-readyapi-project.xml'"```
 
     **Tip**: Alternatively, you can specify the command line in an image (see an example [above](#specify-a-command-line))
