@@ -35,7 +35,18 @@ RUN apt-get update -y && apt-get upgrade -y
 
 # ADD readyapi/ext $READYAPI_FOLDER/bin/ext
 
-##### USE CASE 4: specify a command line in a Docker image
+##### USE CASE 4: add plugins to a Docker image
+
+# If you use plugins in your test, you must install them to ReadyAPI in a container. 
+# For example, if you run your test by using the MQTT or AMQP protocols, you must install 
+# the related plugins. It is possible to add them to a Docker image. In this case,
+# you can omit `-v="Plugins folder":/root/.soapui/plugins` in the command line. 
+# Note that the plugin files you want to add must be in the build context.
+# To add plugins to a Docker image, use the following line:
+
+# ADD plugins /root/.soapui/plugins
+
+##### USE CASE 5: specify a command line in a Docker image
 
 # When you run a container, it runs the SoapUI test runner via the command line 
 # specified in the COMMAND_LINE environment variable. You can add this
