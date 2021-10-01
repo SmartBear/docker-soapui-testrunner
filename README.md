@@ -1,8 +1,8 @@
-# Docker SoapUI Test Runner
+# Docker ReadyAPI Test Runner
 
 ## Table of contents
 
-- [Docker SoapUI Test Runner](#docker-soapui-test-runner)
+- [Docker ReadyAPI Test Runner](#docker-soapui-test-runner)
   - [Table of contents](#table-of-contents)
   - [About](#about)
   - [Required license](#required-license)
@@ -23,11 +23,11 @@
 
 ## About
 
-Use this project to create custom Docker images to run [SoapUI functional tests](https://support.smartbear.com/readyapi/docs/soapui/intro/about.html). The project contains a sample *Dockerfile* that you use to extend the base [_ready-api-soapui-testrunner_](https://hub.docker.com/r/smartbear/ready-api-soapui-testrunner) image.
+Use this project to create custom Docker images to run [ReadyAPI functional tests](https://support.smartbear.com/readyapi/docs/functional/intro/about.html). The project contains a sample *Dockerfile* that you use to extend the base [_ready-api-soapui-testrunner_](https://hub.docker.com/r/smartbear/ready-api-soapui-testrunner) image.
 
 ## Required license
 
-To use a Docker image, you must have a [SoapUI floating license](https://support.smartbear.com/readyapi/docs/general-info/licensing/activate/floating/index.html). When you run a container, it connects to the specified license server and obtains the license. The license server must be available to the container and must be properly configured. See [Configure License Server](https://support.smartbear.com/readyapi/docs/general-info/licensing/activate/floating/configure-license-server.html).
+To use a Docker image, you must have a [ReadyAPI Test floating license](https://support.smartbear.com/readyapi/docs/general-info/licensing/file-based/activate/floating/index.html). When you run a container, it connects to the specified license server and obtains the license. The license server must be available to the container and must be properly configured. See [Configure License Server](https://support.smartbear.com/readyapi/docs/general-info/licensing/file-based/activate/floating/configure-license-server/configure-license-server.html).
 
 ## Build an image
 
@@ -47,7 +47,7 @@ To build an image:
 
 ## Required arguments
 
-To run a SoapUI functional test in a Docker container, you need to pass the following data to the container:
+To run a ReadyAPI functional test in a Docker container, you need to pass the following data to the container:
 
 - the project file
 - the address of the license server
@@ -179,7 +179,7 @@ Depending on the data you [added to the image](#add-files-to-an-image), you can 
   ```"C:\readyapi\reports" -> "/host_mnt/C/readyapi/reports"```
 
 - *-e LICENSE_SERVER="License Server Address"*
-    Specifies the address of the license server. When a container runs, it connects to the specified server to obtain the SoapUI floating license.<br/>
+    Specifies the address of the license server. When a container runs, it connects to the specified server to obtain the ReadyAPI Test floating license.<br/>
     Usage: ```-e LICENSE_SERVER="10.0.10.1:1099"```
 
     **Tip**: Alternatively, you can specify the address of the license server in an image (see [above](#specify-a-license-server)).
@@ -225,7 +225,7 @@ The base _ready-api-soapui-testrunner_ image uses the following environment vari
     Example: ```10.0.10.1:1099```
 
 - *COMMAND_LINE*
-    Contains command-line arguments for the SoapUI test runner. See a complete list of possible arguments in [ReadyAPI documentation](https://support.smartbear.com/readyapi/docs/soapui/running/automating/cli.html).
+    Contains command-line arguments for the ReadyAPI test runner. See a complete list of possible arguments in [ReadyAPI documentation](https://support.smartbear.com/readyapi/docs/functional/running/automating/cli.html).
     Example: ```-f/%reports% '-RJUnit-Style HTML Report' -FHTML '-EDefault environment' '/%project%/sample-readyapi-project.xml'```
 
 ## Exit codes
@@ -234,7 +234,7 @@ Besides the standard Docker exit codes (see the [Docker documentation](https://d
 
 | Code | Description |
 | --- | --- |
-| 101 | ReadyAPI running in a container cannot start due to a license issue.  Make sure the license server is properly [configured](https://support.smartbear.com/readyapi/docs/general-info/licensing/activate/floating/configure-license-server.html)  and the Docker image can access it. See information on [other possible issues with a floating license](https://support.smartbear.com/readyapi/docs/general-info/licensing/troubleshooting/floating.html). |
+| 101 | ReadyAPI running in a container cannot start due to a license issue.  Make sure the license server is properly [configured](https://support.smartbear.com/readyapi/docs/general-info/licensing/file-based/activate/floating/configure-license-server/configure-license-server.html)  and the Docker image can access it. See information on [other possible issues with a floating license](https://support.smartbear.com/readyapi/docs/general-info/licensing/file-based/troubleshooting/floating.html). |
 | 102 | The ReadyAPI project was not found. Make sure you specified the correct folder for the *project* volume, and this folder contains the specified project. |
 | 103 | An error occurred during the test run. See the test log for more information.|
 
