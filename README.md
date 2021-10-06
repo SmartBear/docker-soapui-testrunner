@@ -136,7 +136,7 @@ ENV COMMAND_LINE="-f/%reports% '-RJUnit-Style HTML Report' -FHTML '-EDefault env
 
 ## Run a Docker container
 
-To run a SoapUI functional test in a Docker container, use the following command line:
+To run a ReadyAPI functional test in a Docker container, use the following command line:
 
 	docker run -v="Project Folder":/project -v="Report Folder":/reports -v="Extensions Folder":/ext -v="Plugins Folder:/root/.soapui/plugins -e LICENSE_SERVER="License Server Address" -e COMMAND_LINE="Test Runner Arguments" -it mycompany/docker-soapui-testrunner
 
