@@ -6,7 +6,7 @@ If you believe you've found an exploitable security issue in `docker-soapui-test
 
 ## Supported versions
 
-This is the list of versions of `docker-soapui-testrunner` which are
+This is the list of versions of `ready-api-soapui-testrunner` which are
 currently being supported with security updates.
 
 | Version  | Supported          | Notes                  |
